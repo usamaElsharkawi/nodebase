@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -75,23 +76,35 @@ export function RegisterForm() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  type="button"
-                  disabled={isPending}
-                >
-                  Continue with GitHub
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  type="button"
-                  disabled={isPending}
-                >
-                  Continue with Google
-                </Button>
-              </div>
+                              <Button
+                                variant="outline"
+                                className="w-full"
+                                type="button"
+                                disabled={isPending}
+                              >
+                                <Image
+                                  alt="GitHub"
+                                  src="/logos/github.svg"
+                                  width={20}
+                                  height={20}
+                                />
+                                Continue with GitHub
+                              </Button>
+                              <Button
+                                variant="outline"
+                                className="w-full"
+                                type="button"
+                                disabled={isPending}
+                              >
+                                <Image
+                                  alt="Google"
+                                  src="/logos/google.svg"
+                                  width={20}
+                                  height={20}
+                                />
+                                Continue with Google
+                              </Button>
+                            </div>
               <div className="grid gap-6">
                 <Controller
                   control={form.control}
