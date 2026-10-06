@@ -1,15 +1,14 @@
 import { requireAuth } from "@/lib/auth-utils";
 import { LogoutButton } from "./logout";
-import { caller } from "@/trpc/server";
+import TextAiTest from "./text-ai-test";
 
 export default async function Home() {
   await requireAuth();
-  const greating = await caller.hello({ text: "usama" });
   return (
     <div>
       protected server page <br />
-      {greating.greeting}
+      <TextAiTest />
       <LogoutButton />
     </div>
   );
-}
+} 
