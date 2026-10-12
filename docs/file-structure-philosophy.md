@@ -33,19 +33,20 @@ src/app/
 ```
 src/app/
 ├── (auth)/               # Auth routes (unchanged)
+│   ├── layout.tsx        # AuthLayout (centered card, no sidebar)
 │   ├── login/page.tsx
 │   └── signup/page.tsx
 ├── (dashboard)/          # Dashboard route group (shared sidebar layout)
 │   ├── layout.tsx        # SidebarProvider + SidebarInset + AppSidebar
-│   ├── rest/             # Shared "list/detail" layout
+│   ├── (rest)/           # Shared "list/detail" layout (route group)
 │   │   ├── layout.tsx    # AppHeader + main content area
 │   │   ├── workflows/page.tsx
 │   │   ├── credentials/page.tsx
 │   │   ├── credentials/[credentialId]/page.tsx
 │   │   ├── executions/page.tsx
 │   │   └── executions/[executionId]/page.tsx
-│   └── editor/           # Editor-specific layout (canvas, node palette)
-│       └── workflows/[workflowId]/page.tsx
+│   └── (editor)/         # Editor-specific layout (route group)
+│       └── workflows/[workflowsId]/page.tsx
 ├── layout.tsx            # Root: only providers (Tooltip, TRPC, Toaster)
 ├── global-error.tsx      # Sentry error boundary
 ├── sentry-example-page/  # Sentry test page
@@ -62,8 +63,8 @@ src/app/
 |-------------|---------|---------------|
 | `(auth)` | Authentication pages | AuthLayout (centered card, no sidebar) |
 | `(dashboard)` | All authenticated app pages | SidebarProvider + persistent sidebar |
-| `rest` | List & detail views | AppHeader + main content |
-| `editor` | Visual workflow editor | Canvas header + node palette + ReactFlow canvas |
+| `(rest)` | List & detail views | AppHeader + main content |
+| `(editor)` | Visual workflow editor | Canvas header + node palette + ReactFlow canvas |
 
 **Rule:** Parentheses `()` = **organizational only**, no URL segment.
 
@@ -85,30 +86,30 @@ features/
 
 ✅ Layout-based (lecture approach)
 (dashboard)/
-├── rest/
+├── (rest)/
 │   ├── workflows/page.tsx           # List
 │   ├── credentials/page.tsx         # List
 │   ├── credentials/[credentialId]/  # Detail
 │   ├── executions/page.tsx          # List
 │   └── executions/[executionId]/    # Detail
-└── editor/
-    └── workflows/[workflowId]/page.tsx  # Editor (different layout!)
+└── (editor)/
+    └── workflows/[workflowsId]/page.tsx  # Editor (different layout!)
 ```
 
-**Why?** Workflows exist in **two layouts**: list view (`rest`) and editor (`editor`). Feature folders force duplication or awkward cross-references.
+**Why?** Workflows exist in **two layouts**: list view (`(rest)`) and editor (`(editor)`). Feature folders force duplication or awkward cross-references.
 
 ### 3. Dynamic Routes Mirror Entity Relationships
 
 | Route | Layout | Purpose |
 |-------|--------|---------|
-| `/workflows` | `rest` | List all workflows |
-| `/workflows/[workflowId]` | `editor` | Visual editor (canvas) |
-| `/credentials` | `rest` | List credentials |
-| `/credentials/[credentialId]` | `rest` | Credential detail |
-| `/executions` | `rest` | List executions |
-| `/executions/[executionId]` | `rest` | Execution detail |
+| `/workflows` | `(rest)` | List all workflows |
+| `/workflows/[workflowsId]` | `(editor)` | Visual editor (canvas) |
+| `/credentials` | `(rest)` | List credentials |
+| `/credentials/[credentialId]` | `(rest)` | Credential detail |
+| `/executions` | `(rest)` | List executions |
+| `/executions/[executionId]` | `(rest)` | Execution detail |
 
-**Naming convention:** `[entityId]` with **capital I** (`credentialId`, `executionId`, `workflowId`) — matches `params` destructuring.
+**Naming convention:** `[entityId]` with **capital I** (`credentialId`, `executionId`, `workflowsId`) — matches `params` destructuring.
 
 ### 4. Root Redirect as Default Entry Point
 
@@ -232,11 +233,11 @@ src/components/
 
 ### Adding a New Entity (e.g., "Templates")
 ```
-(dashboard)/rest/
+(dashboard)/(rest)/
 ├── templates/page.tsx
 └── templates/[templateId]/page.tsx
 ```
-- Drops into existing `rest` layout automatically
+- Drops into existing `(rest)` layout automatically
 - Gets sidebar, header, auth for free
 
 ### Adding a New Layout Variant (e.g., "Settings")
@@ -247,12 +248,12 @@ src/components/
 └── billing/page.tsx
 ```
 - New route group = new layout boundary
-- No impact on `rest` or `editor`
+- No impact on `(rest)` or `(editor)`
 
 ### Moving an Entity Between Layouts
 If credentials need an editor later:
 ```
-(dashboard)/editor/credentials/[credentialId]/page.tsx
+(dashboard)/(editor)/credentials/[credentialId]/page.tsx
 ```
 - Just create the file — structure expresses intent
 
