@@ -9,7 +9,7 @@ export const createTRPCContext = cache(async () => {
   });
 
   return {
-    session,
+    auth:session,
     user: session?.user ?? null,
   };
 });
@@ -25,7 +25,7 @@ export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
-  if (!ctx.session || !ctx.user) {
+  if (!ctx.auth || !ctx.user) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You must be logged in to access this resource",
@@ -34,7 +34,7 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session,
+      auth: ctx.auth,
       user: ctx.user,
     },
   });
@@ -43,7 +43,7 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 export const premiumProcedure = protectedProcedure.use(
   async ({ ctx, next }) => {
     const customer = await polarClient.customers.getStateExternal({
-      externalId: ctx.session.user.id,
+      externalId: ctx.auth.user.id,
     });
 
     if (
