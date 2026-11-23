@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <TRPCReactProvider>
           <TooltipProvider>
-            {children} <Toaster />
+            <NuqsAdapter>{children}</NuqsAdapter> <Toaster />
           </TooltipProvider>
         </TRPCReactProvider>
       </body>
